@@ -5,5 +5,20 @@
   "main": "index.js",
   "author": "d2201",
   "license": "GPL-3.0",
-  "private": false
+  "private": false,
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/ini": "^1.3.30",
+    "@types/node": "^14.14.41",
+    "@types/xml": "^1.0.5",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "nexe": "^4.0.0-beta.18",
+    "prettier": "^2.2.1",
+    "ts-node-dev": "^1.1.6"
+  }
 }
