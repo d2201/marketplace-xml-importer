@@ -1,0 +1,9 @@
+{
+  "name": "marketplace-xml-importer",
+  "version": "1.0.0",
+  "description": "XML importer for the most popular marketplaces in Poland",
+  "main": "index.js",
+  "author": "d2201",
+  "license": "GPL-3.0",
+  "private": false
+}
