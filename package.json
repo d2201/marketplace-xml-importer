@@ -14,7 +14,9 @@
     "xml-flow": "^1.0.4"
   },
   "scripts": {
-    "dev": "ts-node-dev src/index"
+    "dev": "ts-node-dev src/index",
+    "prettify": "prettier -l --config .prettierrc --write \"src/**/*.{ts,tsx,js,json}\" && yarn lint:fix",
+    "lint:fix": "eslint --ext .ts,.tsx --fix ."
   },
   "author": "d2201",
   "license": "GPL-3.0",
