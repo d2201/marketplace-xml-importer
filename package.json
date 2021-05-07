@@ -15,6 +15,8 @@
   },
   "scripts": {
     "dev": "ts-node-dev src/index",
+    "build": "tsc",
+    "start": "node build/index",
     "prettify": "prettier -l --config .prettierrc --write \"src/**/*.{ts,tsx,js,json}\" && yarn lint:fix",
     "lint:fix": "eslint --ext .ts,.tsx --fix ."
   },

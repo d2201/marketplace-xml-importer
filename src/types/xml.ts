@@ -17,6 +17,7 @@ export type XMLItem = {
   attributes: SimpleOrArray<XMLAttribute>
   images: SimpleOrArray<string>
   delivery: { unit: 'hours' | 'days'; amount: string }
+  externalid?: string
 }
 
 type DescriptionTextItem = {

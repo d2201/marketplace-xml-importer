@@ -5,7 +5,7 @@ import logger from '../logger'
 export default class ErliSDK extends ApiBase {
   constructor() {
     super({
-      requestsRateLimit: 1000,
+      requestsRateLimit: 9000,
       baseUrl: global.config.erli.apiUrl,
       maxErrorCount: 5,
       sleepDurationOnError: {
@@ -13,7 +13,7 @@ export default class ErliSDK extends ApiBase {
         rateLimit: 15_000,
         serviceUnavailable: 10_000,
       },
-      repeatOnUnknownError: true,
+      repeatOnUnknownError: false,
     })
 
     this.isAuthorized = true
