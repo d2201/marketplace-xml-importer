@@ -1,6 +1,5 @@
 import ApiBase from '@sdk/base'
 import { ProductCreate } from '../types/erli'
-import logger from '../logger'
 
 export default class ErliSDK extends ApiBase {
   constructor() {
@@ -23,14 +22,10 @@ export default class ErliSDK extends ApiBase {
   }
 
   async createProduct(externalId: string, productCreateRequest: ProductCreate) {
-    try {
-      await this.request({
-        path: `/products/${externalId}`,
-        method: 'POST',
-        data: productCreateRequest,
-      })
-    } catch (e) {
-      logger.error(JSON.stringify(e.response.data, undefined, 2))
-    }
+    await this.request({
+      path: `/products/${externalId}`,
+      method: 'POST',
+      data: productCreateRequest,
+    })
   }
 }

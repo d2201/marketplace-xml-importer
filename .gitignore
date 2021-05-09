@@ -2,3 +2,4 @@ node_modules
 *.xml
 config.ini
 build
+*.log
