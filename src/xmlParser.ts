@@ -1,14 +1,16 @@
 import fs from 'fs'
 import flow from 'xml-flow'
-import { XMLItem } from './types/xml'
 import AsyncQueue from './helpers/AsyncQueue'
 
-export default async function* getAllXMLItems(fileName: string): AsyncIterableIterator<XMLItem> {
+export default async function* parseXml<T>(
+  iterableTag: string,
+  fileName: string,
+): AsyncIterableIterator<T> {
   const xmlFileStream = fs.createReadStream(fileName)
-  const asyncQueue = new AsyncQueue<XMLItem>()
+  const asyncQueue = new AsyncQueue<T>()
   const stream = flow(xmlFileStream)
 
-  stream.on('tag:item', (item) => {
+  stream.on(`tag:${iterableTag}`, (item) => {
     asyncQueue.push(item)
   })
 
@@ -23,3 +25,14 @@ export default async function* getAllXMLItems(fileName: string): AsyncIterableIt
     item = await asyncQueue.fetch()
   }
 }
+
+export const readFileType = (file: string): Promise<'offer'> =>
+  new Promise((resolve) => {
+    const fileStream = fs.createReadStream(file)
+    const stream = flow(fileStream)
+
+    stream.on('tag:type', (item) => {
+      resolve(item.$cdata)
+      fileStream.close()
+    })
+  })

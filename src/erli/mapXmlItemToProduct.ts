@@ -1,22 +1,40 @@
-import { XMLItem } from '../types/xml'
+import { XMLItem, XMLVariantSet, XMLShippingRate } from '../types/xml'
 import { ProductCreate } from '../types/erli'
 import packToArray from '../helpers/packToArray'
 import mapToDescription from './mapToDescription'
 import mapToAttributes from './mapToAttributes'
+import mapVariantGroup from './mapVariantGroup'
 
-const mapXmlItemToProduct = (item: XMLItem): ProductCreate => ({
-  name: item.name,
-  images: packToArray(item.images).map((imageUrl) => ({ url: imageUrl })),
-  price: Math.floor(+item.price * 100),
-  stock: +item.stock,
-  externalReferences: [`allegro:${item.id}`],
-  dispatchTime: optimizeDelivery(item.delivery),
-  description: mapToDescription(item.description),
-  externalAttributes: mapToAttributes(item.attributes),
-  externalCategories: item.categoryid
-    ? [{ source: 'allegro', breadcrumb: [{ id: item.categoryid }] }]
-    : undefined,
-})
+const mapXmlItemToProduct = (
+  item: XMLItem,
+  variantSets: XMLVariantSet[],
+  shippingRates: XMLShippingRate[],
+): ProductCreate => {
+  const attributes = mapToAttributes(item.attributes)
+
+  const variantSet = variantSets.find((set) =>
+    packToArray(set.productids).some((productId) => item.id === productId),
+  )
+  const priceListTag = item.shippingrateid
+    ? shippingRates.find((rate) => rate.id === item.shippingrateid)
+    : undefined
+
+  return {
+    name: item.name,
+    images: packToArray(item.images).map((imageUrl) => ({ url: imageUrl })),
+    price: Math.floor(+item.price * 100),
+    stock: +item.stock,
+    externalReferences: [`allegro:${item.id}`],
+    dispatchTime: optimizeDelivery(item.delivery),
+    packaging: { tags: [priceListTag?.name ?? '*'] },
+    description: mapToDescription(item.description),
+    externalAttributes: attributes,
+    externalVariantGroup: mapVariantGroup(variantSet, attributes),
+    externalCategories: item.categoryid
+      ? [{ source: 'allegro', breadcrumb: [{ id: item.categoryid }] }]
+      : undefined,
+  }
+}
 
 export default mapXmlItemToProduct
 

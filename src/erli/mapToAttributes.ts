@@ -7,16 +7,16 @@ const mapToAttributes = (attrs: XMLItem['attributes']): Attribute[] => {
   const attributes = packToArray(attrs)
 
   return attributes.map(
-    (attribute) =>
-      toRangeAttribute(attribute) ||
-      toDictionaryAttribute(attribute) ||
-      toStringAttribute(attribute),
+    (attribute, index) =>
+      toRangeAttribute(attribute, index) ||
+      toDictionaryAttribute(attribute, index) ||
+      toStringAttribute(attribute, index),
   )
 }
 
 export default mapToAttributes
 
-const toRangeAttribute = (attribute: XMLAttribute): Maybe<RangeAttribute> => {
+const toRangeAttribute = (attribute: XMLAttribute, index: number): Maybe<RangeAttribute> => {
   if (!attribute.rangevalue) {
     return
   }
@@ -24,6 +24,7 @@ const toRangeAttribute = (attribute: XMLAttribute): Maybe<RangeAttribute> => {
   return {
     type: 'range',
     id: attribute.id,
+    index,
     values: {
       from: +attribute.rangevalue.from,
       to: +attribute.rangevalue.to,
@@ -32,7 +33,10 @@ const toRangeAttribute = (attribute: XMLAttribute): Maybe<RangeAttribute> => {
   }
 }
 
-const toDictionaryAttribute = (attribute: XMLAttribute): Maybe<DictionaryAttribute> => {
+const toDictionaryAttribute = (
+  attribute: XMLAttribute,
+  index: number,
+): Maybe<DictionaryAttribute> => {
   if (!attribute.valuesids || !attribute.valuesids.length) {
     return
   }
@@ -40,14 +44,16 @@ const toDictionaryAttribute = (attribute: XMLAttribute): Maybe<DictionaryAttribu
   return {
     type: 'dictionary',
     id: attribute.id,
+    index,
     source: 'allegro',
     values: packToArray(attribute.valuesids).map((id) => ({ id })),
   }
 }
 
-const toStringAttribute = (attribute: XMLAttribute): StringAttribute => ({
+const toStringAttribute = (attribute: XMLAttribute, index: number): StringAttribute => ({
   type: 'string',
   id: attribute.id,
   source: 'allegro',
+  index,
   values: packToArray(attribute.values),
 })

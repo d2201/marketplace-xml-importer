@@ -21,6 +21,7 @@ export default class AsyncQueue<Item> {
 
   public finish() {
     this.finished = true
+    this.promise.resolve()
   }
 
   /**

@@ -16,7 +16,7 @@ export type ProductCreate = {
   status?: 'active' | 'inactive'
   archived?: boolean
   dispatchTime: { unit: 'hour' | 'day' | 'month'; period: number }
-  packaging?: { tags: Array<string>; weight: number }
+  packaging?: { tags: Array<string>; weight?: number }
   obligatoryIdentifier?: string
   voluntaryIdentifier?: string
   returnIdentifier?: string
@@ -59,6 +59,7 @@ export type DictionaryAttribute = {
   id: number | string
   name?: string
   source?: Source
+  index?: number
   type: 'dictionary'
   values: Array<{ id: number | string; name?: string }>
 }
@@ -80,8 +81,8 @@ type Category = {
   index?: number
 }
 
-type VariantGroupRequest = {
+export type VariantGroupRequest = {
   id: string
-  source?: 'marketplace' | 'integration'
+  source: 'marketplace' | 'integration'
   attributes: Array<'thumbnail' | number>
 }

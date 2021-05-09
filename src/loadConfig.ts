@@ -19,7 +19,7 @@ type ErliConfig = {
 }
 
 type ImporterConfig = {
-  filePath: string
+  directory: string
 }
 
 try {

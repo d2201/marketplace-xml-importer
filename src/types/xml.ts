@@ -17,6 +17,7 @@ export type XMLItem = {
   attributes: SimpleOrArray<XMLAttribute>
   images: SimpleOrArray<string>
   delivery: { unit: 'hours' | 'days'; amount: string }
+  shippingrateid?: string
   externalid?: string
 }
 
@@ -35,6 +36,19 @@ export type XMLAttribute = {
   rangevalue?: { from: string; to: string }
   values: SimpleOrArray<string>
   valuesids: SimpleOrArray<string>
+}
+
+export type XMLVariantSet = {
+  id: string
+  name: string
+  productids: SimpleOrArray<string>
+  usethumbnail: string
+  parameterids: SimpleOrArray<string>
+}
+
+export type XMLShippingRate = {
+  id: string
+  name: string
 }
 
 /**
