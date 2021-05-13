@@ -21,10 +21,10 @@ const uploadProductsToErli = async (
 
   await runConcurrently(parseXml<XMLItem>('item', filePath), 10, async (item) => {
     ++count
-    await sdk.createProduct(
-      item.externalid || item.id,
-      mapXmlItemToProduct(item, variantSets, shippingRates),
-    )
+
+    const productId = item.externalid ? `${item.id}_${item.externalid}` : item.id
+
+    await sdk.createProduct(productId, mapXmlItemToProduct(item, variantSets, shippingRates))
     logger.info(`inserted: ${item.name}`)
 
     if (count % 50 === 0) {

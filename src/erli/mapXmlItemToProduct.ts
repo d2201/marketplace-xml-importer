@@ -4,6 +4,7 @@ import packToArray from '../helpers/packToArray'
 import mapToDescription from './mapToDescription'
 import mapToAttributes from './mapToAttributes'
 import mapVariantGroup from './mapVariantGroup'
+import extractEanFromAttributes from './extractEanFromAttributes'
 
 const mapXmlItemToProduct = (
   item: XMLItem,
@@ -33,6 +34,8 @@ const mapXmlItemToProduct = (
     externalCategories: item.categoryid
       ? [{ source: 'allegro', breadcrumb: [{ id: item.categoryid }] }]
       : undefined,
+    ean: extractEanFromAttributes(item.attributes),
+    sku: item.externalid?.slice(0, 50),
   }
 }
 
