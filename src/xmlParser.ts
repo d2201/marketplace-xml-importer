@@ -11,7 +11,16 @@ export default async function* parseXml<T>(
   const stream = flow(xmlFileStream)
 
   stream.on(`tag:${iterableTag}`, (item) => {
+    if (asyncQueue.size > 100) {
+      xmlFileStream.pause()
+    }
     asyncQueue.push(item)
+  })
+
+  asyncQueue.emitter.on('queue.size.changed', (size) => {
+    if (xmlFileStream.isPaused() && size < 20) {
+      xmlFileStream.resume()
+    }
   })
 
   stream.on('end', () => {

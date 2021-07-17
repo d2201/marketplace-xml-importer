@@ -1,7 +1,10 @@
+import EventEmitter from 'eventemitter3'
 import ControlledPromise from './ControlledPromise'
 
 export default class AsyncQueue<Item> {
   private queue: Item[] = []
+
+  public emitter: EventEmitter = new EventEmitter()
 
   private promise = new ControlledPromise()
 
@@ -33,6 +36,8 @@ export default class AsyncQueue<Item> {
     }
 
     const item = this.queue.shift()
+
+    this.emitter.emit('queue.size.changed', this.size)
 
     if (!this.queue.length) {
       this.promise = new ControlledPromise()
