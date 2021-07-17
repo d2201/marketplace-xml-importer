@@ -8,6 +8,7 @@ declare global {
       config: {
         erli: ErliConfig
         importer: ImporterConfig
+        shoper: ShoperConfig
       }
     }
   }
@@ -16,6 +17,12 @@ declare global {
 type ErliConfig = {
   apiUrl: string
   apiKey: string
+}
+
+type ShoperConfig = {
+  apiUrl: string
+  userName: string
+  password: string
 }
 
 type ImporterConfig = {

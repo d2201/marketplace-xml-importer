@@ -28,4 +28,12 @@ export default class ErliSDK extends ApiBase {
       data: productCreateRequest,
     })
   }
+
+  async updateProduct(externalId: string, productUpdateRequest: Partial<ProductCreate>) {
+    await this.request({
+      path: `/products/${externalId}`,
+      method: 'PATCH',
+      data: productUpdateRequest,
+    })
+  }
 }

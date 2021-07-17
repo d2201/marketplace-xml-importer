@@ -8,6 +8,7 @@
     "cheerio": "^1.0.0-rc.6",
     "eventemitter3": "^4.0.7",
     "ini": "^2.0.0",
+    "jest": "^27.0.6",
     "lodash": "^4.17.21",
     "sax": "^1.2.4",
     "typescript": "^4.2.4",
@@ -19,7 +20,11 @@
     "build": "tsc",
     "start": "node build/index",
     "prettify": "prettier -l --config .prettierrc --write \"src/**/*.{ts,tsx,js,json}\" && yarn lint:fix",
-    "lint:fix": "eslint --ext .ts,.tsx --fix ."
+    "lint:fix": "eslint --ext .ts,.tsx --fix .",
+    "test": "jest \"^.*/tests/*\""
+  },
+  "jest": {
+    "preset": "ts-jest"
   },
   "author": "d2201",
   "license": "GPL-3.0",
@@ -27,6 +32,7 @@
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/ini": "^1.3.30",
+    "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.168",
     "@types/node": "^15.0.2",
     "@types/sax": "^1.2.1",
@@ -40,6 +46,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "nexe": "^4.0.0-beta.18",
     "prettier": "^2.2.1",
+    "ts-jest": "^27.0.3",
     "ts-node-dev": "^1.1.6"
   }
 }

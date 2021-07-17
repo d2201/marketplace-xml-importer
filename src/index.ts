@@ -8,6 +8,7 @@ import runConcurrently from './helpers/runConcurrently'
 import groupFilesByType from './helpers/groupFilesByType'
 import { XMLItem, XMLVariantSet, XMLShippingRate } from './types/xml'
 import collectAllXmlEntitiesInMemory from './helpers/collectAllXmlEntitiesInMemory'
+import ShoperSDK from './sdk/Shoper'
 
 const uploadProductsToErli = async (
   filePath: string,
@@ -16,15 +17,27 @@ const uploadProductsToErli = async (
 ) => {
   logger.info('Starting importing products to erli')
   const sdk = new ErliSDK()
+  const shoperSdk = new ShoperSDK()
 
   let count = 0
 
   await runConcurrently(parseXml<XMLItem>('item', filePath), 10, async (item) => {
     ++count
 
-    const productId = item.externalid ? `${item.id}_${item.externalid}` : item.id
+    const auction = await shoperSdk.findAuctionByOfferId(item.id)
 
-    await sdk.createProduct(productId, mapXmlItemToProduct(item, variantSets, shippingRates))
+    if (!auction) {
+      return
+    }
+
+    const productId = auction.product_id
+
+    const mappedItem = mapXmlItemToProduct(item, variantSets, shippingRates)
+
+    await sdk.updateProduct(productId, {
+      externalAttributes: mappedItem.externalAttributes,
+      externalCategories: mappedItem.externalCategories,
+    })
     logger.info(`inserted: ${item.name}`)
 
     if (count % 50 === 0) {
