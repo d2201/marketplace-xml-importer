@@ -10,7 +10,7 @@ const mapXmlItemToProduct = (
     description: mapToDescription(item.description),
     images: packToArray(item.images).map(image => ({ url: image })),
     overrideFrozen: true,
-    frozen: { description: true }
+    frozen: { description: true, images: true }
   }
 }
 

@@ -24,7 +24,8 @@ export type ProductCreate = {
 }
 
 type FrozenFields = {
-  description: boolean
+  description?: boolean
+  images?: boolean
 }
 
 export type ProductUpdate = Partial<ProductCreate> & { frozen?: FrozenFields; overrideFrozen?: boolean }
