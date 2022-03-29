@@ -20,13 +20,12 @@ const uploadProductsToErli = async (
   let count = 0
 
   await runConcurrently(parseXml<XMLItem>('item', filePath), 10, async (item) => {
-    ++count
-
     const productId = idMap.get(item.id)
 
     if (!productId) {
       return 
     }
+    ++count
     
     const [product] = await sdk.searchProducts({ fields: ['externalId', 'sku'], filter: { field: 'sku', operator: '=', value: productId } })
     
