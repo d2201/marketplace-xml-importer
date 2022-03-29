@@ -6,52 +6,49 @@ import mapXmlItemToProduct from './erli/mapXmlItemToProduct'
 import logger from './logger'
 import runConcurrently from './helpers/runConcurrently'
 import groupFilesByType from './helpers/groupFilesByType'
-import { XMLItem, XMLVariantSet, XMLShippingRate } from './types/xml'
-import collectAllXmlEntitiesInMemory from './helpers/collectAllXmlEntitiesInMemory'
+import { XMLItem } from './types/xml'
+import generateIdMapFromFile from './helpers/generateIdMapFromFile'
 
 const uploadProductsToErli = async (
-  filePath: string,
-  variantSets: XMLVariantSet[],
-  shippingRates: XMLShippingRate[],
+  filePath: string
 ) => {
-  logger.info('Starting importing products to erli')
+  logger.info('Starting updating products in erli')
   const sdk = new ErliSDK()
 
+  const idMap = await generateIdMapFromFile(global.config.importer.csvIdPath)
+  
   let count = 0
 
   await runConcurrently(parseXml<XMLItem>('item', filePath), 10, async (item) => {
     ++count
 
-    const productId = item.externalid ? `${item.id}_${item.externalid}` : item.id
+    const productId = idMap.get(item.id)
 
-    await sdk.createProduct(productId, mapXmlItemToProduct(item, variantSets, shippingRates))
-    logger.info(`inserted: ${item.name}`)
+    if (!productId) {
+      return 
+    }
+    
+    const [product] = await sdk.searchProducts({ fields: ['externalId', 'sku'], filter: { field: 'sku', operator: '=', value: productId } })
+    
+    await sdk.updateProduct(product.externalId, mapXmlItemToProduct(item))
+    logger.info(`updated: ${item.name}`)
 
     if (count % 50 === 0) {
       logger.info(`Processed: ${count}`)
     }
   })
 
-  logger.info(`Finished importing ${count} products to Erli.`)
+  logger.info(`Finished updating ${count} products in Erli.`)
 }
 
 Promise.resolve().then(async () => {
   const byType = await groupFilesByType()
 
-  const variantSets = await flatten<XMLVariantSet>(byType['variant-sets'])
-  const shippingRates = await flatten<XMLShippingRate>(byType['shipping-rates'])
-
   for (const { file } of byType.offers) {
-    await uploadProductsToErli(file, variantSets, shippingRates)
+    await uploadProductsToErli(file)
   }
 
   process.exit(0)
 })
 
 setInterval(() => undefined, 500)
-
-const flatten = async <T>(arr: Array<{ file: string }>): Promise<T[]> => {
-  const promises = arr.map(({ file }) => collectAllXmlEntitiesInMemory<T>(file))
-
-  return _.flatten(await Promise.all(promises))
-}

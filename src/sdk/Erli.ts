@@ -1,5 +1,5 @@
 import ApiBase from '@sdk/base'
-import { ProductCreate } from '../types/erli'
+import { ProductCreate, ProductSearch, ProductUpdate } from '../types/erli'
 
 export default class ErliSDK extends ApiBase {
   constructor() {
@@ -26,6 +26,18 @@ export default class ErliSDK extends ApiBase {
       path: `/products/${externalId}`,
       method: 'POST',
       data: productCreateRequest,
+    })
+  }
+  
+  async searchProducts(productSearch: ProductSearch): Promise<Array<{ externalId: string; sku: string }>> {
+    return this.request({ path: `/products/_search`, method: 'POST', data: productSearch })
+  }
+
+  async updateProduct(externalId: string, productUpdateRequest: ProductUpdate) {
+    await this.request({
+      path: `/products/${externalId}`,
+      method: 'PATCH' as any,
+      data: productUpdateRequest
     })
   }
 }

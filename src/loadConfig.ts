@@ -20,6 +20,7 @@ type ErliConfig = {
 
 type ImporterConfig = {
   directory: string
+  csvIdPath: string
 }
 
 try {

@@ -23,6 +23,17 @@ export type ProductCreate = {
   invoiceType?: 'vatInvoice' | 'vatInvoiceWithMarginScheme' | 'invoiceWithoutVat'
 }
 
+type FrozenFields = {
+  description: boolean
+}
+
+export type ProductUpdate = Partial<ProductCreate> & { frozen?: FrozenFields; overrideFrozen?: boolean }
+
+export type ProductSearch = {
+  filter?: { field: string; operator: string; value: string }
+  fields?: string[]
+}
+
 export type Attribute = NumberAttribute | RangeAttribute | DictionaryAttribute | StringAttribute
 
 type TextSectionItem = {
