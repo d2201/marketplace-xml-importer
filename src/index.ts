@@ -18,8 +18,10 @@ const uploadProductsToErli = async (
   const idMap = await generateIdMapFromFile(global.config.importer.csvIdPath)
   
   let count = 0
+  let totalCount = 0
 
   await runConcurrently(parseXml<XMLItem>('item', filePath), 10, async (item) => {
+    ++totalCount
     const productId = idMap.get(item.id)
 
     if (!productId) {
@@ -37,7 +39,7 @@ const uploadProductsToErli = async (
     }
   })
 
-  logger.info(`Finished updating ${count} products in Erli.`)
+  logger.info(`Finished updating ${count}/${totalCount} products in Erli.`)
 }
 
 Promise.resolve().then(async () => {
